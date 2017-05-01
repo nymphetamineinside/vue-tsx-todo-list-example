@@ -5,20 +5,11 @@ import Storage from './storage';
 
 export default class Data{
 
-    protected static _entity: Data;
-
-    static getEntity() {
-        if(!Data._entity) {
-            Data._entity = new Data();
-        }
-        return Data._entity;
-    }
-
     public items = [];
     
     protected _storage: Storage;
     
-    protected constructor() {
+    constructor() {
         this._storage = new Storage();
         this.items = this._storage.load();
     }

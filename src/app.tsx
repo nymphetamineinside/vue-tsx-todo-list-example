@@ -11,13 +11,13 @@ import Data from './data';
             '<h2>Todo List</h2>' +
             '<input v-model="newItem" @keyup.enter="addItem"/>' +
             '<button @click="addItem">Add</button>' +
-            '<ul v-if="items.length">' +
+            '<ul v-if="dataStorage.items.length">' +
                 '<li><a @click="visibility=\'all\'" href="#" >All</a></li>' +
                 '<li><a @click="visibility=\'active\'" href="#" >Active</a></li>' +
                 '<li><a @click="visibility=\'completed\'" href="#" >Completed</a></li>' +
             '</ul>' +
-            '<div class="table-responsive">' +
-                '<table class="table" v-if="items.length">' +
+            '<div class="table-responsive" v-if="dataStorage.items.length">' +
+                '<table class="table">' +
                     '<thead>' +
                         '<tr>' +
                             '<th>' +
@@ -31,14 +31,14 @@ import Data from './data';
                     '<tbody>' +
                         '<tr v-for="item in filteredItems">' +
                             '<td><p @dblclick="editItem(item)" v-if="item != editedItem" >{{item.title}}</p>' +
-                            '<input @keyup.enter="editSave(item)" @keyup.esc="editCancel(item)" type="text" v-model="editedItem.title"v-if="item == editedItem"></td>' +
+                            '<input @blur="editSave(item)" @keyup.enter="editSave(item)" @keyup.esc="editCancel(item)" type="text" v-model="editedItem.title"v-if="item == editedItem"></td>' +
                             '<td><input @change="saveCompleted" type="checkbox" v-model="item.completed"></td>' +
                             '<td><a @click="removeItem(item)" href="#" >Remove</a></td>' +
                         '</tr>' +
                     '</tbody>' +
                 '</table>' +
             '</div>' +
-            '<p v-if="items.length"> * Please use double-click on item label for edit</p>' +
+            '<p v-if="dataStorage.items.length"> * Please use double-click on item label for edit</p>' +
         '</div>'
 })
 
@@ -54,8 +54,8 @@ export default class App extends Vue {
     public editedItem: string = '';
 
     public itemTitleCache: string = '';
-
-    public items = Data.getEntity().items;
+    
+    public dataStorage;
 
     public filters = {
         all: function (items) {
@@ -92,22 +92,27 @@ export default class App extends Vue {
             })
         }
     };
+    
+    constructor() {
+        super();
+        this.dataStorage = new Data();
+    }
 
     get filteredItems() {
-        var sortedItems = this.items;
+        var sortedItems = this.dataStorage.items;
         if (!this.editedItem) {
-            sortedItems = this.sorts[this.sort](this.items)
+            sortedItems = this.sorts[this.sort](this.dataStorage.items)
         }
         return this.filters[this.visibility](sortedItems);
     }
 
     addItem() {
-        this.items.push({
-            id: Data.getEntity().getId(),
+        this.dataStorage.items.push({
+            id: this.dataStorage.getId(),
             title: this.newItem,
             completed: false
         });
-        Data.getEntity().save();
+        this.dataStorage.save();
         this.newItem = '';
     }
 
@@ -124,12 +129,12 @@ export default class App extends Vue {
         if (!item.title) {
             this.removeItem(item);
         }
-        Data.getEntity().save();
+        this.dataStorage.save();
     }
 
     removeItem(item) {
-        this.items.splice(this.items.indexOf(item), 1);
-        Data.getEntity().save();
+        this.dataStorage.items.splice(this.dataStorage.items.indexOf(item), 1);
+        this.dataStorage.save();
     }
 
     editCancel(item) {
@@ -138,6 +143,6 @@ export default class App extends Vue {
     }
 
     saveCompleted() {
-        Data.getEntity().save();
+        this.dataStorage.save();
     }
 }
