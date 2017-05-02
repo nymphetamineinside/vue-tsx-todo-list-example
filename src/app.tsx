@@ -79,22 +79,24 @@ export default class App extends Vue {
         },
         asc: function (items) {
             return items.sort(function (a, b) {
+                if(a.title == b.title) return 0;
+
                 if(a.title < b.title) {
                     return -1;
                 } else {
                     return 1;
                 }
-                return 0;
             })
         },
         desc: function (items) {
             return items.sort(function (a, b) {
+                if(a.title == b.title) return 0;
+
                 if(a.title > b.title) {
                     return -1;
                 } else {
                     return 1;
                 }
-                return 0;
             })
         }
     };
