@@ -9,13 +9,17 @@ import Data from './data';
     template:
         '<div class="container">' +
             '<h2>Todo List</h2>' +
-            '<input v-model="newItem" @keyup.enter="addItem"/>' +
-            '<button @click="addItem">Add</button>' +
-            '<ul v-if="dataStorage.items.length">' +
-                '<li><a @click="visibility=\'all\'" href="#" >All</a></li>' +
-                '<li><a @click="visibility=\'active\'" href="#" >Active</a></li>' +
-                '<li><a @click="visibility=\'completed\'" href="#" >Completed</a></li>' +
-            '</ul>' +
+            '<div class="form-group input-group">' +
+                '<input v-model="newItem" @keyup.enter="addItem" class="form-control"/>' +
+                '<div class="input-group-btn">' +
+                    '<button @click="addItem" class="btn btn-primary">Add</button>' +
+                '</div>' +
+            '</div>' +
+            '<div v-if="dataStorage.items.length" class="list-group">' +
+                '<a @click="visibility=\'all\'" href="#" :class="[\'list-group-item\', { active: visibility == \'all\' }]" >All</a>' +
+                '<a @click="visibility=\'active\'" href="#" :class="[\'list-group-item\', { active: visibility == \'active\' }]" >Active</a>' +
+                '<a @click="visibility=\'completed\'" href="#" :class="[\'list-group-item\', { active: visibility == \'completed\' }]" >Completed</a>' +
+            '</div>' +
             '<div class="table-responsive" v-if="dataStorage.items.length">' +
                 '<table class="table">' +
                     '<thead>' +
@@ -31,8 +35,12 @@ import Data from './data';
                     '<tbody>' +
                         '<tr v-for="item in filteredItems">' +
                             '<td><p @dblclick="editItem(item)" v-if="item != editedItem" >{{item.title}}</p>' +
-                            '<input @blur="editSave(item)" @keyup.enter="editSave(item)" @keyup.esc="editCancel(item)" type="text" v-model="editedItem.title"v-if="item == editedItem"></td>' +
-                            '<td><input @change="saveCompleted" type="checkbox" v-model="item.completed"></td>' +
+                            '<input @blur="editSave(item)" @keyup.enter="editSave(item)" @keyup.esc="editCancel(item)" type="text" v-model="editedItem.title" v-if="item == editedItem" class="form-control" /></td>' +
+                            '<td>' +
+                                '<div class="checkbox">' +
+                                    '<input @change="saveCompleted" type="checkbox" v-model="item.completed" />' +
+                                '</div>' +
+                            '</td>' +
                             '<td><a @click="removeItem(item)" href="#" >Remove</a></td>' +
                         '</tr>' +
                     '</tbody>' +
