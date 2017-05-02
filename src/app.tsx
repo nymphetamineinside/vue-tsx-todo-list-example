@@ -37,9 +37,7 @@ import Data from './data';
                             '<td><p @dblclick="editItem(item)" v-if="item != editedItem" >{{item.title}}</p>' +
                             '<input @blur="editSave(item)" @keyup.enter="editSave(item)" @keyup.esc="editCancel(item)" type="text" v-model="editedItem.title" v-if="item == editedItem" class="form-control" /></td>' +
                             '<td>' +
-                                '<div class="checkbox">' +
-                                    '<input @change="saveCompleted" type="checkbox" v-model="item.completed" />' +
-                                '</div>' +
+                                '<input @change="saveCompleted" type="checkbox" v-model="item.completed" />' +
                             '</td>' +
                             '<td><a @click="removeItem(item)" href="#" >Remove</a></td>' +
                         '</tr>' +
